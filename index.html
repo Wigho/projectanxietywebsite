@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AnXiEtY | ARMOUR_v33.0</title>
+    
+    <link href="https://fonts.cdnfonts.com/css/new-gothic-style" rel="stylesheet">
+    <script src="https://js.paystack.co/v1/inline.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
+    <style>
+        /* --- CORE VISUALS --- */
+        :root {
+            --orange: #ff4d00;
+            --dark: #0a0a0b;
+            --grey-light: #f4f4f4;
+            --grey-tech: #dee2e6;
+            --white: #ffffff;
+        }
+
+        * { box-sizing: border-box; cursor: crosshair; }
+        body { margin: 0; font-family: 'Space Mono', monospace; overflow-x: hidden; transition: background 0.6s ease; }
+        
+        .gothic-text { font-family: 'New Gothic Style', sans-serif; text-transform: uppercase; }
+        .mono-text { font-family: 'Space Mono', monospace; font-size: 0.85rem; letter-spacing: 1px; }
+
+        /* --- DYNAMIC ZONES --- */
+        body.zone-introPage { background: var(--dark); color: var(--white); }
+        body.zone-collectionPage { background: var(--grey-light); color: var(--dark); background-image: radial-gradient(#d1d1d1 1px, transparent 1px); background-size: 25px 25px; }
+        body.zone-sizePage { background: var(--grey-tech); color: var(--dark); background-image: linear-gradient(#cbd5e1 1px, transparent 1px); background-size: 100% 40px; }
+        body.zone-cartPage { background: var(--white); color: var(--dark); border-left: 15px solid var(--orange); }
+
+        /* --- LOADERS & OVERLAYS --- */
+        #initial-loader { position: fixed; inset: 0; background: var(--orange); z-index: 10000; display: flex; justify-content: center; align-items: center; color: white; transition: 0.8s ease; }
+        #transition-overlay { position: fixed; inset: 0; background: var(--dark); z-index: 11000; display: flex; justify-content: center; align-items: center; color: var(--orange); transition: 0.5s; opacity: 0; pointer-events: none; }
+        .hide { display: none !important; }
+
+        /* --- NAV --- */
+        .permanent-nav { position: fixed; top: 0; width: 100%; display: flex; justify-content: space-between; padding: 20px 5%; z-index: 5000; mix-blend-mode: difference; color: white; }
+        .nav-link { background: none; border: none; color: inherit; font-family: 'Space Mono'; cursor: pointer; margin-left: 20px; font-weight: bold; }
+
+        /* --- MANIFESTO (INTRO) --- */
+        .page { position: absolute; inset: 0; width: 100%; height: 100vh; padding-top: 100px; display: none; overflow-y: auto; opacity: 0; transition: opacity 0.5s; }
+        .page.active { display: block; opacity: 1; }
+        .page-center-box { min-height: 80vh; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 40px 5%; text-align: center; }
+        
+        .manifesto-container { max-width: 800px; border: 1px solid rgba(255,255,255,0.1); padding: 40px; background: rgba(0,0,0,0.8); }
+        .highlight { color: var(--orange); font-weight: bold; }
+        .armour-tag { display: inline-block; background: var(--white); color: var(--dark); padding: 5px 15px; font-weight: 900; margin-top: 15px; transform: skewX(-10deg); }
+
+        /* --- PRODUCT GRID --- */
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; padding: 120px 5%; }
+        .product-card { background: white; border: 1px solid #ddd; padding: 15px; transition: 0.3s; }
+        .product-card:hover { border-color: var(--orange); transform: translateY(-5px); box-shadow: 10px 10px 0px var(--dark); }
+        .frame-img { aspect-ratio: 3/4; overflow: hidden; background: #eee; margin-bottom: 10px; }
+        .frame-img img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* --- UI ELEMENTS --- */
+        .prime-btn { background: var(--orange); color: white; border: none; padding: 18px 30px; font-family: 'New Gothic Style'; font-size: 1.1rem; cursor: pointer; transition: 0.2s; margin-top: 20px; }
+        .prime-btn:hover { background: var(--dark); }
+        .lab-input { width: 100%; padding: 15px; margin-bottom: 10px; border: 1px solid #ccc; font-family: 'Space Mono'; }
+        
+        /* --- GLITCH ANIMATION --- */
+        @keyframes glitch {
+            0% { transform: skew(0deg); }
+            20% { transform: skew(10deg); filter: hue-rotate(90deg); }
+            100% { transform: skew(0deg); }
+        }
+        .glitch-pulse { animation: glitch 0.3s infinite; }
+
+        @media (max-width: 768px) {
+            .manifesto-container { padding: 20px; }
+            .gothic-text { font-size: 2.5rem; }
+        }
+    </style>
+</head>
+<body class="zone-introPage">
+
+    <div id="initial-loader">
+        <div id="loader-wrap" style="text-align: center;">
+            <h1 class="gothic-text" id="loadPercent" style="font-size: 4rem;">0%</h1>
+            <div id="gatekeeper" class="hide">
+                <h1 class="glitch-pulse gothic-text" style="font-size: 3rem;">AnXiEtY</h1>
+                <button class="prime-btn" onclick="enterLab()">INITIALIZE_SYSTEM</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="transition-overlay">
+        <h1 class="gothic-text glitch-pulse">ENCRYPTING...</h1>
+    </div>
+
+    <nav class="permanent-nav">
+        <div class="gothic-text" style="font-size: 1.5rem; letter-spacing: -2px;">AnXiEtY</div>
+        <div class="nav-menu">
+            <button class="nav-link" onclick="fluidNavigate('collectionPage')">ARCHIVE</button>
+            <button class="nav-link" onclick="fluidNavigate('sizePage')">SIZING</button>
+            <button class="nav-link" onclick="fluidNavigate('cartPage')">BAG (<span id="cartCount">0</span>)</button>
+        </div>
+    </nav>
+
+    <main id="page-container">
+        
+        <section id="introPage" class="page active">
+            <div class="page-center-box">
+                <div class="manifesto-container">
+                    <h1 class="gothic-text" style="font-size: 3.5rem; margin: 0;">ARMOUR_STATION</h1>
+                    <p class="manifesto-text mono-text">
+                        ANXIETY GARMENT IS NOT JUST CLOTHING.<br>
+                        IT’S YOU <span class="highlight">ACCEPTING WHO YOU REALLY ARE</span> ON A SHIRT.<br><br>
+                        WE DON’T DESIGN TO STOP THE VOICES.<br>
+                        BE BOLD IN YOUR DRESSING.<br><br>
+                        <span class="armour-tag">ANXIETY_ARMOUR_IS_HERE.</span>
+                    </p>
+                    <div style="margin: 30px 0; opacity: 0.5;">[ LOCK_OUT_THE_NOISE ]</div>
+                    <button class="prime-btn" onclick="fluidNavigate('collectionPage')">ACCESS_ARCHIVE</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="collectionPage" class="page">
+            <div class="product-grid" id="mainGrid"></div>
+        </section>
+
+        <section id="sizePage" class="page">
+            <div class="page-center-box">
+                <div style="background: white; padding: 40px; border: 1px solid #000; width: 100%; max-width: 600px;">
+                    <h1 class="gothic-text">TECHNICAL_SIZING</h1>
+                    <p class="mono-text">ALL MEASUREMENTS IN INCHES</p>
+                    <table style="width: 100%; text-align: left; border-collapse: collapse; margin-top: 20px;">
+                        <tr style="border-bottom: 2px solid #000;"><th>SIZE</th><th>CHEST</th><th>LENGTH</th></tr>
+                        <tr><td>SMALL</td><td>40"</td><td>27"</td></tr>
+                        <tr><td>MEDIUM</td><td>42"</td><td>28"</td></tr>
+                        <tr><td>LARGE</td><td>44"</td><td>29"</td></tr>
+                        <tr><td>X-LARGE</td><td>46"</td><td>30"</td></tr>
+                    </table>
+                    <button class="prime-btn" onclick="fluidNavigate('collectionPage')" style="width: 100%;">RETURN_TO_BASE</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="cartPage" class="page">
+            <div class="page-center-box">
+                <div style="background: white; padding: 40px; border: 1px solid #000; width: 100%; max-width: 600px;">
+                    <h1 class="gothic-text">BAG_LOGISTICS</h1>
+                    <div id="fullCartList" style="margin: 20px 0;"></div>
+                    <h2 id="cartTotal" class="gothic-text">TOTAL: ₦0</h2>
+                    <input type="text" id="custName" class="lab-input" placeholder="FULL_NAME">
+                    <input type="email" id="custEmail" class="lab-input" placeholder="EMAIL_ADDRESS">
+                    <button class="prime-btn" style="width: 100%;" onclick="processFinalPayment()">EXECUTE_PAYMENT</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="productDetailPage" class="page">
+            <div id="detailContent" class="page-center-box"></div>
+        </section>
+
+    </main>
+
+    <script>
+        /* --- AnXiEtY v33.0 FUSED KERNEL --- */
+
+        const PAY_KEY = 'pk_live_784c1eefbc4bd93de0dd13dd31ee2e2b033c2036';
+        const EMAIL_SERVICE = 'service_1x6x31p';
+        const EMAIL_TEMPLATE = 'template_vv9zvrl';
+        const EMAIL_PUBLIC = 'X00-nwtedBT9T_nGB';
+
+        const PRODUCTS = [
+            { id: 'p1', name: 'ARCHIVE_01', price: 15000, img: 'images/p1.jpg', desc: "GREEN_CORE // ARMOUR_SERIES" },
+            { id: 'p2', name: 'ARCHIVE_02', price: 18000, img: 'images/p2.jpg', desc: "RED_RAW // ARMOUR_SERIES" },
+            { id: 'p3', name: 'ARCHIVE_03', price: 20000, img: 'images/p3.jpg', desc: "PINK_VOID // ARMOUR_SERIES" },
+            { id: 'p4', name: 'ARCHIVE_04', price: 25000, img: 'images/p4.jpg', desc: "OBSIDIAN_TECH // ARMOUR_SERIES" },
+            { id: 'p5', name: 'ARCHIVE_05', price: 22000, img: 'images/p5.jpg', desc: "BONE_BLACK // ARMOUR_SERIES" },
+            { id: 'p6', name: 'ARCHIVE_06', price: 18000, img: 'images/p6.jpg', desc: "WHITE_VOID // ARMOUR_SERIES" },
+            { id: 'p7', name: 'ARCHIVE_07', price: 22000, img: 'images/p7.jpg', desc: "TRANSIT_POLO // ARMOUR_SERIES" },
+            { id: 'p8', name: 'ARCHIVE_08', price: 19000, img: 'images/p8.jpg', desc: "URBAN_ARMOUR // ARMOUR_SERIES" },
+            { id: 'p9', name: 'ARCHIVE_09', price: 21000, img: 'images/p9.jpg', desc: "NEURAL_NAVY // ARMOUR_SERIES" },
+            { id: 'p10', name: 'ARCHIVE_10', price: 25000, img: 'images/p10.jpg', desc: "CHARCOAL_ACID // ARMOUR_SERIES" },
+            { id: 'p11', name: 'ARCHIVE_11', price: 30000, img: 'images/p11.jpg', desc: "IVORY_PREMIUM // ARMOUR_SERIES" }
+        ];
+
+        let cart = [];
+        let currency = 'NGN';
+
+        // 1. BOOT SEQUENCE
+        window.onload = () => {
+            let count = 0;
+            const counter = document.getElementById('loadPercent');
+            const gate = document.getElementById('gatekeeper');
+            const interval = setInterval(() => {
+                count += Math.floor(Math.random() * 10) + 2;
+                if(count >= 100) {
+                    count = 100;
+                    clearInterval(interval);
+                    counter.classList.add('hide');
+                    gate.classList.remove('hide');
+                }
+                counter.innerText = count + "%";
+            }, 50);
+            renderHome();
+        };
+
+        function enterLab() {
+            const loader = document.getElementById('initial-loader');
+            loader.style.opacity = '0';
+            setTimeout(() => { loader.style.display = 'none'; }, 800);
+            fluidNavigate('introPage');
+        }
+
+        // 2. NAVIGATION ENGINE
+        function fluidNavigate(targetId, callback = null) {
+            const overlay = document.getElementById('transition-overlay');
+            overlay.style.opacity = '1';
+            overlay.style.pointerEvents = 'auto';
+
+            setTimeout(() => {
+                document.body.className = `zone-${targetId}`;
+                document.querySelectorAll('.page').forEach(p => { p.classList.remove('active'); p.style.display = 'none'; });
+                
+                const target = document.getElementById(targetId);
+                target.style.display = 'block';
+                setTimeout(() => target.classList.add('active'), 10);
+
+                if(callback) callback();
+                window.scrollTo(0,0);
+
+                setTimeout(() => {
+                    overlay.style.opacity = '0';
+                    overlay.style.pointerEvents = 'none';
+                }, 500);
+            }, 600);
+        }
+
+        // 3. CORE LOGIC
+        function renderHome() {
+            const grid = document.getElementById('mainGrid');
+            grid.innerHTML = PRODUCTS.map(p => `
+                <div class="product-card" onclick="openProductPage('${p.id}')">
+                    <div class="frame-img"><img src="${p.img}" onerror="this.src='https://via.placeholder.com/300x400?text=AX_ARCHIVE'"></div>
+                    <h3 class="gothic-text">${p.name}</h3>
+                    <p class="mono-text">₦${p.price.toLocaleString()}</p>
+                </div>`).join('');
+        }
+
+        function openProductPage(id) {
+            const p = PRODUCTS.find(prod => prod.id === id);
+            fluidNavigate('productDetailPage', () => {
+                document.getElementById('detailContent').innerHTML = `
+                    <div style="background: white; border: 1px solid #000; padding: 20px; display: flex; flex-wrap: wrap; gap: 30px; max-width: 900px; text-align: left;">
+                        <img src="${p.img}" style="width: 300px; border: 1px solid #ddd;">
+                        <div style="flex: 1; min-width: 280px;">
+                            <h1 class="gothic-text">${p.name}</h1>
+                            <p class="mono-text">${p.desc}</p>
+                            <h2 class="gothic-text">₦${p.price.toLocaleString()}</h2>
+                            <button class="prime-btn" style="width: 100%;" onclick="addToBag('${p.id}')">ADD_TO_BAG</button>
+                            <button class="nav-link" style="margin: 20px 0 0 0; display: block;" onclick="fluidNavigate('collectionPage')">← BACK_TO_ARCHIVE</button>
+                        </div>
+                    </div>`;
+            });
+        }
+
+        function addToBag(id) {
+            const item = PRODUCTS.find(p => p.id === id);
+            cart.push(item);
+            document.getElementById('cartCount').innerText = cart.length;
+            updateCartUI();
+            fluidNavigate('cartPage');
+        }
+
+        function updateCartUI() {
+            const list = document.getElementById('fullCartList');
+            let total = cart.reduce((sum, i) => sum + i.price, 0);
+            document.getElementById('cartTotal').innerText = `TOTAL: ₦${total.toLocaleString()}`;
+            list.innerHTML = cart.map((item, i) => `
+                <div style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee;">
+                    <span>${item.name}</span>
+                    <button onclick="removeFromCart(${i})" style="color: red; background: none; border: none; cursor: pointer;">[REMOVE]</button>
+                </div>`).join('');
+        }
+
+        function removeFromCart(i) {
+            cart.splice(i, 1);
+            document.getElementById('cartCount').innerText = cart.length;
+            updateCartUI();
+        }
+
+        function processFinalPayment() {
+            const email = document.getElementById('custEmail').value;
+            const name = document.getElementById('custName').value;
+            if(!email.includes('@') || !name) return alert("REQUIRED: VALID_EMAIL_AND_NAME");
+            if(cart.length === 0) return alert("BAG_IS_EMPTY");
+
+            let total = cart.reduce((sum, item) => sum + item.price, 0);
+            let handler = PaystackPop.setup({
+                key: PAY_KEY,
+                email: email,
+                amount: total * 100,
+                currency: 'NGN',
+                callback: function() {
+                    emailjs.init(EMAIL_PUBLIC);
+                    emailjs.send(EMAIL_SERVICE, EMAIL_TEMPLATE, { to_name: name, to_email: email, total: total });
+                    alert("TRANSACTION_COMPLETE // ARMOUR_SECURED");
+                    location.reload();
+                }
+            });
+            handler.openIframe();
+        }
+    </script>
+</body>
+</html>
